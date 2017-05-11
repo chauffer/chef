@@ -1,5 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import math
 import requests
+from datetime import datetime
 
 from . import settings
 
@@ -8,6 +12,24 @@ from .sklizeno import VelkeSklizeno
 
 def dummy_chef():
     msg = build_post_string(VelkeSklizeno().scrape().to_serializable())
+    msg += build_post_string({'main_dishes': [{'is_vege': False,
+                  'name': 'Pečená kachna, medové zelí, domácí houskový knedlík',
+                  'price': 129},
+                 {'is_vege': False,
+                  'name': 'Vepřové nudličky s rajčaty a paprikou, rýže basmati',
+                  'price': 109},
+                 {'is_vege': True,
+                  'name': 'Dušená červená čočka, sázené vejce, kvásková bagetka',
+                  'price': 109}],
+ 'menu_date': {'date': '2017-05-12'},
+ 'serving_time': {'time_from': datetime.time(11, 0),
+                  'time_to': datetime.time(16, 0)},
+ 'soups': [{'is_vege': True,
+            'name': 'Zeleninový vývar s nudlemi a zeleninou',
+            'price': 29},
+           {'is_vege': True,
+            'name': 'Franfurtská polévka s párkem',
+            'price': 29}]})
     r = requests.post(settings.SLACK_WEBHOOK,
                       json={
                           'text': msg,
