@@ -4,8 +4,9 @@ from . import settings
 
 def dummy_chef():
     msg = 'chef rulez'
-    r = requests.post('https://hooks.slack.com/services/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',
+    r = requests.post(settings.SLACK_WEBHOOK,
     json = {'text': msg,
-            'channel':'#hack-days-chef',
+            'channel':settings.SLACK_CHANNEL,
             'username': 'chef'})
     print(r.status_code)
+    print(r.content)
