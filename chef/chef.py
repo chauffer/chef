@@ -1,8 +1,9 @@
 import math
 import requests
+
 from . import settings
 
-from sklizeno import VelkeSklizeno
+from .sklizeno import VelkeSklizeno
 
 
 def dummy_chef():
@@ -19,6 +20,7 @@ def dummy_chef():
 
 def build_post_string(restaurant):
     post_string = ""
+    post_string += ":tada::tada::tada: Menu for date " + str(restaurant['menu_date']['date']) + " :tada::tada::tada:\n"
     post_string += build_food_string(restaurant['soups'])
     post_string += build_food_string(restaurant['main_dishes'])
     return post_string
@@ -27,21 +29,21 @@ def build_post_string(restaurant):
 def build_food_string(food_array):
     food_string = ""
     for food in food_array:
-        food_string += pretty_formater(food['name'], food['price'])
-        food_string += " " + str(food['price'])
+        food_string += food['name']
+        food_string += " " + str(food['price']) + " czk"
         food_string += " :carrot:" if food['is_vege'] else ""
         food_string += "\n"
     return food_string
 
 
 def pretty_formater(food_name, food_price):
-    not_broken = True
+    broken = False
     final_string = ""
     if len(food_name) > 80:
         for word in food_name.split(" "):
-            if len(final_string) + len(word) > 80 and not_broken:
+            if len(final_string) + len(word) > 80 and broken:
                 final_string += "\n" + word
-                not_broken = False
+                broken = True
             else:
                 final_string += word
 

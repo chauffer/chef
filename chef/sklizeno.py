@@ -7,7 +7,7 @@ import lxml.html as html
 from datetime import datetime, time
 from pprint import pprint as pp
 
-from protocol import Soup, MainDish, Menu, MenuDate, ServingTime
+from .protocol import Soup, MainDish, Menu, MenuDate, ServingTime
 
 
 class MetaFood(object):
@@ -99,7 +99,8 @@ class VelkeSklizeno(Restaurant):
                          int(times[1].split('.')[1])))
 
         self.response = requests.get('{0}{1}'.format(self.meta.BASE_URL, self.meta.restaurants[self.code]))
-        tree = html.fromstring(self.response.content)
+        self.response.encoding = 'utf-8'
+        tree = html.fromstring(self.response.text)
         items = tree.cssselect('body > div.row-wide.homepage > div > div.large-6.medium-6.large-offset-1.columns > table > tbody > tr')
         for i, item in enumerate(items):
             for index in self.items_indexes:
@@ -118,8 +119,6 @@ class VelkeSklizeno(Restaurant):
                                                 price=price,
                                                 is_vege=i == 2))
                 elif i == index[0] and index[1] == MainDish:
-                    print item.cssselect('td:nth-child(2)')[0].text, "HHUHUH"
-                    print html.tostring(item)
                     try:
                         name = item.cssselect('td:nth-child(2) > font > span')[0].text
                     except:
@@ -139,6 +138,3 @@ class VelkeSklizeno(Restaurant):
         serving_times_raw = tree.cssselect('body > div.row.homepage-top > div:nth-child(2) > div > div:nth-child(2) > p > strong')[0].text
         self.menu.serving_time = ServingTime(serving_times_raw=serving_times_raw, parsing_fun=serving_time_parsing_function)
         return self.menu
-
-
-pp(VelkeSklizeno().scrape().to_serializable())
