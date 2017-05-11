@@ -1,5 +1,5 @@
-from kw.chef import app
+from chef import dummy_chef
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    dummy_chef()

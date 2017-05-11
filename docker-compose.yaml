@@ -4,8 +4,6 @@ services:
     app:
       build:
         context: .
-        args:
-          PIP_INDEX_URL: ${PIP_INDEX_URL}
-      ports:
-        - "8080:8080"
-      command: python run.py
+      command:
+        - crond
+        - -f
