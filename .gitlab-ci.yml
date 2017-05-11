@@ -1,0 +1,27 @@
+stages:
+  - build
+  - release
+  - deploy
+
+image: docker
+
+variables:
+  CONTAINER_IMAGE: registry.skypicker.com:5005/$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG
+
+
+
+build:
+  stage: build
+  script:
+   - docker login -e gitlab-ci@kiwi.com -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.skypicker.com:5005
+   - docker build --build-arg PIP_INDEX_URL=$PIP_INDEX_URL -t CONTAINER_IMAGE .
+   - docker push CONTAINER_IMAGE
+
+deploy:
+  stage: deploy
+  image: registry.skypicker.com:5005/ladaradon/python-rancher-compose:latest
+  script:
+   - cd .ci
+   - ./deploy.sh production
+  only:
+    - master
