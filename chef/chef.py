@@ -11,9 +11,9 @@ from .sklizeno import VelkeSklizeno
 
 
 def dummy_chef():
-    msg = "Sklizeno\n"
+    msg = "*Sklizeno*\n"
     msg += build_post_string(VelkeSklizeno().scrape().to_serializable())
-    msg += "\n\nMalé sklizeno\n"
+    msg += "\n\n*Malé sklizeno*\n"
     msg += build_post_string({'main_dishes': [{'is_vege': False,
                   'name': 'Pečená kachna, medové zelí, domácí houskový knedlík',
                   'price': 129},
@@ -53,29 +53,33 @@ def build_post_string(restaurant):
 def build_food_string(food_array):
     food_string = ""
     for food in food_array:
-        food_string += food['name']
+        food_string += pretty_formater(food['name'])
         food_string += " " + str(food['price']) + " czk"
         food_string += " :carrot:" if food['is_vege'] else ""
         food_string += "\n"
     return food_string
 
 
-def pretty_formater(food_name, food_price):
-    broken = False
-    final_string = ""
+def pretty_formater(food_name):
+    first_row = ""
+    second_row = ""
     if len(food_name) > 80:
-        for word in food_name.split(" "):
-            if len(final_string) + len(word) > 80 and broken:
-                final_string += "\n" + word
-                broken = True
+        for word in food_name.split(' '):
+            if len(first_row) + len(word) < 80:
+                first_row += word + " "
             else:
-                final_string += word
+                second_row += word + " "
+    else:
+        first_row = food_name
 
-    if len(final_string) + len(str(food_price)) + 3 > 80:
-        final_string += "\n"
+    if len(second_row) == 0:
+        for _ in range(int(80-len(first_row))):
+            first_row += " "
+    else:
+        for _ in range(int(80-len(second_row))):
+            second_row += " "
 
-    last_line = final_string.split("\n")
-    num_of_t = int(math.ceil((80 - len(last_line[len(last_line) - 1])) / 4))
-    for _ in range(num_of_t):
-        final_string += "\t"
-    return final_string
+    if len(second_row) != 0:
+        second_row = "\n" + second_row
+
+    return first_row + second_row
