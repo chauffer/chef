@@ -107,16 +107,10 @@ class BigSklizeno(object):
         """Returns.. hold it.. opening"""
         response = requests.get(self.url_obed)
         c = response.content
-        zero = today.replace(
-            minutes=0,
-            microseconds=0
-        )
-        start = zero.replace(hours=11)
-        end = zero.replace(hours=15)
 
         out = {
-            'start_date': start,
-            'end_date': end
+            'start_date': arrow.get('1337-05-11T11:00'),
+            'end_date': arrow.get('1337-05-11T15:00'),
         }
         return out
 

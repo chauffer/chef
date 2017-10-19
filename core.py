@@ -33,7 +33,6 @@ def le_chef():
 
         from pprint import pprint
         pprint(food_dict)
-        continue
         r = requests.post(settings.SLACK_WEBHOOK, json=food_dict)
         print(r.status_code)
         print(r.text)
