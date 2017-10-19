@@ -166,7 +166,9 @@ class BigSklizeno(object):
             in ['soups', 'dishes']
         }
 
+        j = 0
         for nick, data in values.items():
+            i = 0
             for ind, row in data.iterrows():
                 nam = row[dish_name]
                 dirty_pric_str = row[dish_price]
@@ -180,16 +182,15 @@ class BigSklizeno(object):
 
                 pric = int(pric_str)
 
-                vegene = False
-
                 it = {
                     'name': nam,
                     'price': pric,
-                    'vege': vegene,
+                    'vege': i == 3 or i == 4 or (i == 1 and j == 0),
                 }
-
+                i += 1
                 out[nick.value].append(it)
 
+            j += 1
 
         return out
 

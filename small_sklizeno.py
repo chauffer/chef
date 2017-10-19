@@ -21,17 +21,19 @@ class SmallSklizeno(object):
             return {}
 
         soups = []
-        for soup in response['daily_menus'][0]['daily_menu']['dishes'][:2]:
+        for i, soup in enumerate(response['daily_menus'][0]['daily_menu']['dishes'][:2]):
             soups.append({
                 'name': soup['dish']['name'],
-                'price': int(soup['dish']['price'].split('\xa0')[0])
+                'price': int(soup['dish']['price'].split('\xa0')[0]),
+                'vege': i == 0,
             })
 
         dishes = []
-        for dish in response['daily_menus'][0]['daily_menu']['dishes'][2:5]:
+        for i, dish in enumerate(response['daily_menus'][0]['daily_menu']['dishes'][2:5]):
             dishes.append({
                 'name': dish['dish']['name'],
-                'price': int(dish['dish']['price'].split('\xa0')[0])
+                'price': int(dish['dish']['price'].split('\xa0')[0]),
+                'vege': i == 2,
             })
 
         daily_menu = {

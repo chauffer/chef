@@ -34,17 +34,18 @@ class River(object):
             name, price = self._parse(soup['dish']['name'], soup=True)
             soups.append({
                 'name': name,
-                'price': price
+                'price': price,
             })
 
         dishes = []
-        for dish in response['daily_menus'][0]['daily_menu']['dishes'][1:]:
+        for i, dish in enumerate(response['daily_menus'][0]['daily_menu']['dishes'][1:]):
             if dish['dish']['name'].startswith('Týdenní menu'):
                 break
             name, price = self._parse(dish['dish']['name'])
             dishes.append({
                 'name': name,
-                'price': price
+                'price': price,
+                'vege': i == 3,
             })
 
         daily_menu = {
