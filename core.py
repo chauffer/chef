@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import traceback
-from datetime import time
 
 import requests
 
@@ -42,7 +41,7 @@ def le_chef():
 
 def build_broken_json(restaurant_name):
     rest_json = {
-        'title': f'{restaurant_name} :tada::tada::tada:',
+        'title': f'{restaurant_name}',
         'color': '#36a64f',
         'footer': "Im broken, sry.",
         'fields': "This restaurant module broke, please fix it yourself because this isn't maintained project."
@@ -52,7 +51,7 @@ def build_broken_json(restaurant_name):
 
 def build_menu_json(restaurant_name, menu_dict):
     rest_json = {
-        'title': f'{restaurant_name} :tada::tada::tada:',
+        'title': f'{restaurant_name}',
         'color': '#36a64f',
         'footer': f"Lunch is served from {menu_dict['start_date'].format('HH:mm')} until {menu_dict['end_date'].format('HH:mm')}",
         'fields': build_food_json(menu_dict['soups']) + build_food_json(menu_dict['dishes']),
