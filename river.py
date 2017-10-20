@@ -11,12 +11,19 @@ class River(object):
         super(River, self).__init__()
         self.api_key = api_key
 
-    def _parse(self, line, soup=False):
+    def _parse(self, line, price_fallback=None, soup=False):
         parts = line.split(' ')
         if soup:
             return ' '.join(parts[1:-1]), 0
         name = ' '.join(parts[2:-2])
-        price = int(parts[-2].split(',')[0])
+        try:
+            price = int(parts[-2].split(',')[0])
+        except Exception:
+            if price_fallback:
+                price = price_fallback.split('\xa0')[0]
+            else:
+                raise
+
         return name, price
 
     def get(self):
@@ -38,15 +45,24 @@ class River(object):
             })
 
         dishes = []
-        for i, dish in enumerate(response['daily_menus'][0]['daily_menu']['dishes'][1:]):
+        pp(response)
+        i = 0
+        for dish in response['daily_menus'][0]['daily_menu']['dishes'][1:]:
             if dish['dish']['name'].startswith('Týdenní menu'):
                 break
-            name, price = self._parse(dish['dish']['name'])
+            if len(dish['dish']['name']) < 10:
+                continue
+            try:
+                name, price = self._parse(dish['dish']['name'], price_fallback=dish['dish']['price'])
+            except Exception:
+                continue
+
             dishes.append({
                 'name': name,
                 'price': price,
                 'vege': i == 3,
             })
+            i += 1
 
         daily_menu = {
             'start_date': arrow.get('1337-05-11T10:30'),
