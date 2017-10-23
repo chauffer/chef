@@ -47,5 +47,6 @@ class SmallSklizeno(object):
 
 
 if __name__ == '__main__':
-    response = SmallSklizeno(api_key='PLACE-YOUR-SECRET-KEY-HERE').get()
+    import os
+    response = SmallSklizeno(api_key=os.getenv('ZOMATO_API_KEY')).get()
     pp(response)

@@ -75,5 +75,6 @@ class River(object):
 
 
 if __name__ == '__main__':
-    response = River(api_key='API-KEY').get()
+    import os
+    response = River(api_key=os.getenv('ZOMATO_API_KEY')).get()
     pp(response)
