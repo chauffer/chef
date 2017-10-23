@@ -194,6 +194,8 @@ class BigSklizeno(object):
                 }
                 i += 1
                 out[nick.value].append(it)
+                if i == 4:
+                    break
 
             j += 1
 
