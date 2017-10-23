@@ -80,6 +80,18 @@ class HTMLTableParser:
 
         return df
 
+dish_type = 0
+dish_name = 1
+dish_vege = 2
+dish_price = 3
+
+week_dish_name = 0
+week_dish_price = 1
+
+week_col_map = {
+    week_dish_name: dish_name,
+    week_dish_price: dish_price
+}
 
 class BigSklizeno(object):
     url_main = 'http://www.foodlovers.cz/'
@@ -120,23 +132,16 @@ class BigSklizeno(object):
 
         response = requests.get(self.url_obed)
         c = response.content
+
         self.soup = BeautifulSoup(c, 'html.parser')
 
-        day_in_week = today.weekday() + 1
-        if day_in_week in [6,7]:
-            return dict()
-        else:
-            cnt = day_in_week
+        df = self.get_menu_table_df(today)
 
-        df = self.get_menu_table_df(cnt)
         out = self.process_df(df)
         return out
 
     def process_df(self, df):
 
-        dish_type = 0
-        dish_name = 1
-        dish_price = 3
         parts = {
             dish_type: {
                 'Pol': ent.soup,
@@ -149,10 +154,10 @@ class BigSklizeno(object):
 
         df.index = df[dish_type]
 
-
         values = {}
         for column_name, column_parts in parts.items():
             for part_name, nick in column_parts.items():
+
                 # get account
                 trx = df[df[column_name].str.contains(part_name, na=False)]
                 if not len(trx):
@@ -194,14 +199,63 @@ class BigSklizeno(object):
 
         return out
 
-    def get_menu_table_df(self, cnt):
+    def get_menu_table_df(self, today):
+        
+        div_cls = 'large-6 medium-6 end columns'
+        divs = self.soup.find_all('div', {'class': div_cls})
 
-        cls_name = f'nabidka_{cnt}'
-        li = self.soup.find('table', {'class': cls_name})
+        today_str = today.format('DD.MM.YYYY')
+        week_str = 'nab'
+        headers = ['nab', 'dka', 'Pond', 'ter', 'eda', 'tvrtek', 'tek']
+        
+        today_div = None
+        week_div = None
 
+        # get today_div
+        for div in divs:
+            date_h2 = div.select_one('h2') #find('h2', {'class': 'nomargin nopading'})
+            
+            header = None
+            if date_h2 is not None:
+                if any((word in str(date_h2) for word in headers)):
+                    header = date_h2.get_text()
+               
+            if header:
+                if today_str in header:
+                    today_div = div
+                if week_str in header:
+                    week_div = div
+
+        cls_name = 'nabidka_4'
         p = HTMLTableParser()
-        df = p.parse_html_table(li)
-        return df
+        if today_div:
+            li = today_div.find('table', {'class': cls_name})
+            today_df = p.parse_html_table(li)
+        
+        pd.set_option("display.width",999)
+
+        cls_name = 'nabidka_2'
+        if week_div:
+            li = week_div.find('table', {'class': cls_name})
+            if li:
+                week_df = p.parse_html_table(li)
+            week_df.columns = [week_col_map[col] for col in week_df.columns]
+            week_df[dish_type] = [self.get_dish_type(row) for row in week_df[dish_name]]
+
+        week_df[dish_vege] = [0, 1, 1]
+
+        today_df.drop(today_df.columns[[0, 1, 2, 3]], axis=1, inplace=True)
+        frames = [today_df, week_df]
+        all_df = pd.concat(frames, axis=0, ignore_index=True)
+
+        return all_df
+
+    def get_dish_type(self, txt):
+        if 'Pol'.lower() in txt.lower():
+            return 'Pol'
+        else:
+            return 'Menu'
 
 if __name__ == '__main__':
-    dict_ = BigSklizeno().get(today=None)
+    dict_ = BigSklizeno().get(today=arrow.utcnow().replace())
+    print(dict_)
