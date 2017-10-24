@@ -9,6 +9,7 @@ import settings
 from small_sklizeno import SmallSklizeno
 from big_sklizeno import BigSklizeno
 from river import River
+from translate import translate
 
 
 def le_chef():
@@ -19,9 +20,9 @@ def le_chef():
         'attachments': [],
     }
     active_modules = [
-        ("Malé sklizeno", SmallSklizeno(settings.ZOMATO_API_KEY)),
+        ("Small Sklizeno", SmallSklizeno(settings.ZOMATO_API_KEY)),
         ("Campus River", River(settings.ZOMATO_API_KEY)),
-        ("Velké sklizeno", BigSklizeno())
+        ("Big Sklizeno", BigSklizeno())
     ]
 
     for restaurant_name, banana in active_modules:
@@ -61,10 +62,10 @@ def build_menu_json(restaurant_name, menu_dict):
 def build_food_json(food_array):
     food_json = []
     for food in food_array:
-        food_json.append({'value': food['name'].replace(u'\xa0', u' ') + (" :carrot:" if food.get('vege') else ""), 'short': 'true'})
+        food_text = food['name'].replace(u'\xa0', u' ')
+        food_json.append({'value': f'{translate(food_text).text} ({food_text})' + (" :carrot:" if food.get('vege') else ""), 'short': 'true'})
         food_json.append({'value': f"{food['price']} Kč", 'short': 'true'})
     return food_json
-
 
 if __name__=='__main__':
     le_chef()
