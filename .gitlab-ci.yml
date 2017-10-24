@@ -1,0 +1,29 @@
+stages:
+  - release-commit
+  - release-latest
+
+variables:
+  IMAGE_COMMIT: $CI_REGISTRY_IMAGE:$CI_BUILD_REF
+  IMAGE_LATEST: $CI_REGISTRY_IMAGE:latest
+  IMAGE_BRANCH: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_SLUG
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY || true
+
+release-commit:
+  stage: release-commit
+  image: docker:1.12
+  script:
+   - docker build -t $IMAGE_COMMIT -t $IMAGE_BRANCH .
+   - docker push $IMAGE_COMMIT
+   - docker push $IMAGE_BRANCH
+
+release-latest:
+  stage: release-latest
+  image: docker:1.12
+  script:
+   - docker pull $IMAGE_COMMIT
+   - docker tag $IMAGE_COMMIT $IMAGE_LATEST
+   - docker push $IMAGE_LATEST
+  only:
+   - master
