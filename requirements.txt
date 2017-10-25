@@ -9,5 +9,9 @@ aiohttp==2.3.1            # via aiogoogletrans
 async-timeout==2.0.0      # via aiohttp
 chardet==3.0.4            # via aiohttp
 multidict==3.3.0          # via aiohttp, yarl
+olefile==0.44             # via pillow
+pillow==4.3.0             # via pyocr
+pyocr==0.4.7
 requests==2.14.2
+six==1.11.0               # via pyocr
 yarl==0.13.0              # via aiohttp
