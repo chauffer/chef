@@ -13,7 +13,7 @@ def le_chef():
         "icon_emoji": ":chef:",
         'attachments': [],
     }
-    for name, method in restaurants:
+    for name, method, custom_data in restaurants:
         try:
             meal_number = 1
             fields = []
@@ -29,7 +29,7 @@ def le_chef():
         slack_payload['attachments'] = [{
             'title': name,
             'fields': fields,
-            'color': '#36a64f',
+            'color': custom_data.get('color', '#36a64f'),
             'mrkdwn_in': ['fields'],
         }]
 
