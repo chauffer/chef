@@ -15,10 +15,12 @@ def le_chef():
     }
     for name, method in restaurants:
         try:
+            meal_number = 1
             fields = []
             for meal in method().get():
-                meal = f'{translate(meal).text}'
+                meal = f'*{meal_number}.* {translate(meal).text}'
                 fields.append(meal)
+                meal_number += 1
             fields = [{'value': '\n'.join(fields)}]
         except:
             traceback.print_exc()
@@ -28,6 +30,7 @@ def le_chef():
             'title': name,
             'fields': fields,
             'color': '#36a64f',
+            'mrkdwn_in': ['fields'],
         }]
 
         r = requests.post(settings.SLACK_WEBHOOK, json=slack_payload)
