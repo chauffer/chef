@@ -18,7 +18,8 @@ def le_chef():
             fields = []
             for meal in method().get():
                 meal = f'{translate(meal).text}'
-                fields.append({'value': meal})
+                fields.append(meal)
+            fields = [{'value': '\n'.join(fields)}]
         except:
             traceback.print_exc()
             fields = [{'value': 'Something broke.'}]
