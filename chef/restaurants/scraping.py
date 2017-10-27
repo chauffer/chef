@@ -3,8 +3,10 @@ import re
 import unicodedata
 import contextlib
 
+
 class Scraping:
-    def get(self):
+
+    def get_content(self) -> str:
         r = requests.get(
             self.url,
             timeout=5,
@@ -13,10 +15,13 @@ class Scraping:
 
         with contextlib.suppress(AttributeError):
             r.encoding = self.encoding
+        return r.text
 
+    def get(self):
         matches = []
 
-        for match in re.findall(self.regex, r.text, re.MULTILINE):
+        content = self.get_content()
+        for match in re.findall(self.regex, content, re.MULTILINE):
 
             with contextlib.suppress(AttributeError):
                 if any(blacklist in match for blacklist in self.blacklist):

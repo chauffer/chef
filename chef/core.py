@@ -6,6 +6,7 @@ import datetime
 from translate import translate
 from restaurants import restaurants
 
+
 def le_chef():
     slack_payload = {
         'channel': settings.SLACK_CHANNEL,
@@ -15,12 +16,16 @@ def le_chef():
     }
     for name, method, custom_data in restaurants:
         try:
-            meal_number = 1
             fields = []
-            for meal in method().get():
-                meal = f'*{meal_number}.* {translate(meal).text}'
+            menu_items = method().get()
+            for meal_number, menu_item in enumerate(menu_items, start=1):
+                if isinstance(menu_item, tuple):
+                    meal, meal_type = menu_item
+                else:
+                    meal, meal_type = menu_item, ''
+
+                meal = f'*{meal_number}.* {meal_type} {translate(meal).text}'
                 fields.append(meal)
-                meal_number += 1
             fields = [{'value': '\n'.join(fields)}]
         except:
             traceback.print_exc()
@@ -49,6 +54,7 @@ def run_at_time():
         if notified_today and now.hour > hour:
             notified_today = False
         time.sleep(2)
+
 
 if __name__=='__main__':
     le_chef()
