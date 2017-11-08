@@ -25,7 +25,10 @@ class CampusRiver(Scraping):
         self.encoding = 'windows-1250'
 
     def get(self):
-        return super().get()[:5]
+        ret = []
+        for i, food in enumerate(super().get()[:5]):
+            ret.append((food, {'veg': i == 4})) # Last item is vegetarian
+        return ret
 
 if __name__ == '__main__':
     print(CampusRiver().get())
