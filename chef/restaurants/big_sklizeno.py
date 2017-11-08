@@ -33,9 +33,9 @@ class BigSklizenoParser(Scraping):
             title = cols[0].text
             content = cols[1].text
             if self.soup in title:
-                matches.append((content, '🍲 '))  # 🍜🥣🍲
+                matches.append((content, {'emoji':'🍲'}))  # 🍜🥣🍲
             elif self.meal in title:
-                matches.append((content, '🍛 '))
+                matches.append((content, {'emoji':'🍛'}))
         return matches
 
 

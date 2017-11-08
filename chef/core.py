@@ -17,15 +17,22 @@ def le_chef():
     for name, method, custom_data in restaurants:
         try:
             fields = []
-            menu_items = method().get()
-            for meal_number, menu_item in enumerate(menu_items, start=1):
-                if isinstance(menu_item, tuple):
-                    meal, meal_type = menu_item
-                else:
-                    meal, meal_type = menu_item, ''
+            for i, meal_info in enumerate(method().get(), start=1):
 
-                meal = f'*{meal_number}.* {meal_type} {translate(meal).text}'
-                fields.append(meal)
+                if isinstance(meal_info, tuple):
+                    meal, meal_data = meal_info[0], meal_info[1]
+                else:
+                    meal, meal_data = meal_info, {}
+
+                meal = translate(meal).text
+
+                if meal_data.get('veg', False):
+                    meal = f'*{meal}*'
+
+                if meal_data.get('emoji'):
+                    meal = f"{meal_data['emoji']} {meal}"
+
+                fields.append(f'*{i}.* {meal}')
             fields = [{'value': '\n'.join(fields)}]
         except:
             traceback.print_exc()
