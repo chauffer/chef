@@ -28,7 +28,7 @@ class KiwiBistro:
             re.findall(' src="(\/download[^"]+weekmenu_en[^"]+)"', content)[0]
 
         r = self.session.get(image, stream=True)
-    
+
         tool = pyocr.get_available_tools()[0]
         return tool.image_to_string(
             Image.open(r.raw),
@@ -50,10 +50,12 @@ class KiwiBistro:
                 continue
             line = re.sub('\([0-9,.]+\)', '', line) # allergens
             line = re.sub('[0-9]+\s?K.$', '', line) # price
+            is_veg = line
             line = re.sub('^[^\s]*69[^\s]*|[^\s]*Veg[^\s]*', '', line) # veg
+            is_veg = True if is_veg != line else False
             line = line.strip()
 
-            menuitems[day].append(line)
+            menuitems[day].append((line, {'veg': is_veg}))
         return menuitems
 
     def get(self):
