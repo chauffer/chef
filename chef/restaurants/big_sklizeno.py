@@ -18,6 +18,7 @@ class BigSklizenoParser(Scraping):
     encoding = 'utf-8'
     soup = 'Polévka'
     meal = 'Menu'
+    vegetarian_index = [6, 7]
 
     def get(self):
         bs = BeautifulSoup(self.get_content(), 'html.parser')
@@ -25,6 +26,7 @@ class BigSklizenoParser(Scraping):
         rows = table.find_all('tr')
 
         matches = []
+        index = 1
         for row in rows:
             cols = row.find_all('td')
             if not cols:
@@ -33,9 +35,18 @@ class BigSklizenoParser(Scraping):
             title = cols[0].text
             content = cols[1].text
             if self.soup in title:
-                matches.append((content, {'emoji':'🍲'}))  # 🍜🥣🍲
+                matches.append((content, {'emoji': '🍲'}))
             elif self.meal in title:
-                matches.append((content, {'emoji':'🍛'}))
+                if index in self.vegetarian_index:
+                    extra = {
+                        'emoji': '🥕',
+                        'veg': True,
+                    }
+                else:
+                    extra = {'emoji': '🍖'}
+
+                matches.append((content, extra))
+            index += 1
         return matches
 
 
