@@ -13,11 +13,15 @@ class Zomato:
 
         meals = []
 
-        for meal in r.json()['daily_menus'][0]['daily_menu']['dishes']:
+        for i, meal in enumerate(r.json()['daily_menus'][0]['daily_menu']['dishes']):
             meal = self.filter(meal['dish']['name'])
             if meal:
-                meals.append(meal.strip())
+                meals.append((meal, {'veg': self.is_vegetarian(meal, i)}))
+
         return meals
-    
+
     def filter(self, meal):
         return meal
+
+    def is_vegetarian(self, meal, number):
+        return False
