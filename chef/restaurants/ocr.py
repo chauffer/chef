@@ -28,13 +28,49 @@ class Ocr:
         self.text = response.json()['responses'][0]['textAnnotations'][0]['description']
         return self.text
 
-    def filtered_image_text(self):
+    def filter_line(self, line):
+        return True, line
+
+    def is_vegetarian(self, meal, items):
+        raise NotImplementedError
+
+    def filter_image_text(self):
+        day, menuitems = 0, {}
+
+        for line in self.text_trash_removal():
+            if len(line.split(' ')) == 1 and line.lower().endswith('day'):
+                #1word == Monday, Tuesday, ..
+                day += 1
+                menuitems[day] = []
+                continue
+            if day == 0: # Still not at the days, skip.
+                continue
+
+            is_veg, line = self.is_vegetarian(line, len(menuitems[day]))
+
+            menuitems[day].append((line.strip(), {'veg': is_veg}))
+        return menuitems
+
+    def text_trash_removal(self):
         if not self.text:
             raise 'bur'
         for line in self.text.split('\n'):
-            line = re.sub('\([0-9,.]+\)', '', line) # allergens
-            line = re.sub('[0-9]+\s?K.$', '', line) # price
-            if len(line.strip()) == 0:
+            if not line:
+                continue
+
+            is_line_allowed, line = self.filter_line(line)
+            if not is_line_allowed:
+                continue
+
+            removal_regex = [
+                '\([0-9,.]+\)',  # allergens
+                '[0-9]+(?:\s?K.|\,?\-?)$',  # price
+                '^\d?[\,\.]+\d*l?',  # restaurant n and liters
+                '^\d+g',  # grams
+            ]
+            for regex in removal_regex:
+                line = re.sub(regex, '', line).strip()
+            if not line:
                 continue
 
             yield line
