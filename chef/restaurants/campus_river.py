@@ -12,7 +12,7 @@ class CampusRiver(Ocr):
     def get_english_menu_url(self):
         r = requests.get(self.index)
         for link in BeautifulSoup(r.text, 'html.parser').find_all('img'):
-                if '_b.jpg' in link['src']:
+                if '_b.jpg' in link['src'].lower():
                     return urljoin(self.index, link['src'])
 
     def is_vegetarian(self, meal, items):
