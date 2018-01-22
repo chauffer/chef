@@ -25,7 +25,7 @@ class KiwiBistro(Ocr):
         )
         content = r.json()['body']['view']['value']
         # Find & download image
-        return self.base_url + re.findall(' src="(\/download[^"]+weekmenu_en[^"]+)"', content)[0]
+        return self.base_url + re.findall(' src="(\/download[^"]+(?:EN|[^m]en)[^"]+)"', content)[0]
 
     def is_vegetarian(self, meal, items):
         meal_filtered = re.sub('^[^\s]*69[^\s]*|[^\s]*Veg[^\s]*', '', meal)
