@@ -65,9 +65,9 @@ class CampusRiver:
             return CampusRiverO().get()
         except:
             try:
-                return CampusRiverZ.get()
+                return CampusRiverZ().get()
             except:
-                return CampusRiverS.get()
+                return CampusRiverS().get()
 
 if __name__ == '__main__':
     print(CampusRiver().get())
