@@ -8,6 +8,7 @@ import datetime
 from .ocr import Ocr
 
 class KiwiBistro(Ocr):
+    numbers = ('Soup 1', 'Soup 2', '1', '2', '3', '4')
     base_url, confluence_page_id = 'https://confluence.kiwi.com', 12485782
 
     def __init__(self):

@@ -13,6 +13,7 @@ class BigSklizeno(Scraping):
 
 class BigSklizenoParser(Scraping):
     """Scraper using HTML parser instead of regex to find menu."""
+    numbers = ('Soup 1', 'Soup 2', '1', '2', '3', '4', '5')
 
     url = 'http://www.foodlovers.cz/index.php?pg=home'
     encoding = 'utf-8'

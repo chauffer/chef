@@ -59,6 +59,7 @@ class CampusRiverS(Scraping):
         return ret
 
 class CampusRiver:
+    numbers = ('Soup', '1', '2', '3', '4')
     @staticmethod
     def get():
         try:

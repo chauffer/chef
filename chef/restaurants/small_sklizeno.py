@@ -1,6 +1,7 @@
 from .zomato import Zomato
 
 class SmallSklizeno(Zomato):
+    numbers = ('Soup 1', 'Soup 2', '1', '2', '3')
     def __init__(self):
         self.zomato_id = 16507591
 

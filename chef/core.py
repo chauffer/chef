@@ -17,7 +17,11 @@ def le_chef():
     for name, method, custom_data in restaurants:
         try:
             fields = []
-            for i, meal_info in enumerate(method().get(), start=1):
+            for i, meal_info in enumerate(method().get()):
+                try:
+                    i = method().numbers[i]
+                except:
+                    pass
 
                 if isinstance(meal_info, tuple):
                     meal, meal_data = meal_info[0], meal_info[1]
